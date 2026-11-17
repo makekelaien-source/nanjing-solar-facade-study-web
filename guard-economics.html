@@ -311,7 +311,12 @@ by('reset').onclick=()=>{for(const [k,v] of Object.entries(defaults))by('p-'+k).
 by('csv').onclick=()=>{
   const csv=[['参数','数值','单位']];
   csv.push(['安装与控制策略',by('policy').selectedOptions[0].textContent,'']);
-  for(const [,items] of fields)for(const [k,label,unit] of items)csv.push([label,params[k],unit]);
+  for(const [,items] of fields)for(const [k,label,unit] of items){
+    if(!scenarios[2].prior&&['clip','minutes','wage','visit','cpcLong','cpcShort'].includes(k))continue;
+    csv.push([label,params[k],unit]);
+  }
+  if(!scenarios[2].prior)csv.push(['打印 CPC 长件含安装',printedUnit(params,true).total,'元/件'],
+    ['打印 CPC 短件含安装',printedUnit(params,false).total,'元/件'],['81 件打印 CPC 含安装总价',results[3].long+results[3].short,'元']);
   csv.push([],['方案','初投资_元','首年驱动_kWh','年装拆_元','冬季直射_kWh','夏季透热_kWh','寿命期净现值_元']);
   for(const r of results)csv.push([r.title,r.capex,r.drive,r.labor,r.winter,r.summer,r.npv]);
   csv.push([],['20年门槛','满足光热条件','最高待机_W每轴','最高反射总价_元','双零净现值差_元','双零传动初购限价_元']);
